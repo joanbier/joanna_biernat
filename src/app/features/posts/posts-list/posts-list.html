@@ -1,0 +1,22 @@
+<div class="page bg-surface-0 dark:bg-surface-900">
+<!--  <app-search-box></app-search-box>-->
+  @if (posts()) {
+    <div class="post-list">
+      @for (post of posts(); track post.id) {
+        <app-post-card class="post-card" [post]="post"></app-post-card>
+      } @empty {
+        <div class="flex mx-auto mt-6">
+          <p>No results</p>
+        </div>
+      }
+    </div>
+  } @else if (!posts() && loading()) {
+    <div class="flex flex-col items-center">
+      <small>Posts loading...</small>
+    </div>
+  } @else {
+    <div class="flex mx-auto mt-6">
+      <p>No results</p>
+    </div>
+  }
+</div>
