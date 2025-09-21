@@ -1,0 +1,16 @@
+<nav class="fixed top-0 z-[999] bg-white w-full max-w-7xl mx-auto p-3 rounded-b-lg border border-t-0">
+  <ul class="flex items-center">
+    @for (item of menuItems; track item.label) {
+      <li class="mx-3 text-center">
+        <a
+          class="w-full block hover:underline p-2"
+          [routerLink]="item.path"
+          routerLinkActive="text-sky-800"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="pi pi-{{ item.icon }} pr-1"></i> {{ item.label }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>
