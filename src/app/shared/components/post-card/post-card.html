@@ -1,0 +1,6 @@
+@let postData = post();
+
+<div class="card" (click)="goToDetails()">
+  <p class="text-xl font-bold">{{postData.title}}</p>
+  <p>{{postData.body | truncate: 50}}</p>
+</div>
