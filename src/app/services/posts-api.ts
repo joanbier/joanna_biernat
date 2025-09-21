@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {firstValueFrom} from 'rxjs';
 import {Post} from '../shared/models/post.model';
 import {CommentModel} from '../shared/models/comment.model';
@@ -20,9 +20,12 @@ export class PostsApi {
     return firstValueFrom(post$);
   }
 
-  async getPostById(postId: number): Promise<Post> {
-    const post$ = this.http.get<Post>(`posts/${postId}`);
-    return firstValueFrom(post$);
+  async getPostsByUserId(userId: number): Promise<Post[]> {
+    let params = new HttpParams()
+      .set("userId", userId.toString())
+
+    const posts$ = this.http.get<Post[]>(`posts`, {params});
+    return firstValueFrom(posts$);
   }
 
 }
