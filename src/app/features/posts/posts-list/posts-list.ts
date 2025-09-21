@@ -1,4 +1,4 @@
-import {Component, effect, inject, Signal} from '@angular/core';
+import {Component, computed, effect, inject, signal, Signal} from '@angular/core';
 import {Store} from '../../../services/store';
 import {Loading} from '../../../services/loading';
 import {Post} from '../../../shared/models/post.model';
@@ -19,14 +19,29 @@ export class PostsList {
   loading: Signal<boolean> = this.loadingService.loading;
   posts: Signal<Post[] | null> = this.store.posts;
 
+  filterTerm = signal<string>('');
+
+  filteredPosts = computed(() => {
+    const all = this.posts();
+    const term = this.filterTerm().toLowerCase();
+
+    if (!all) return [];
+
+    if (!term) return all;
+
+    return all.filter(post => post.body.toLowerCase().includes(term));
+  });
+
   constructor() {
     effect(() => {
-      const posts = this.posts();
-
-      if (!posts) {
+      if (!this.posts()) {
         this.store.loadAllPosts();
       }
-      console.log(posts)
     });
+  }
+
+  onFilterChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.filterTerm.set(value);
   }
 }
