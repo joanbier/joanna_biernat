@@ -23,6 +23,30 @@ import {filter, map, mergeMap} from 'rxjs';
     </div>
   `
 })
-export class App {
-  protected readonly title = signal('proffeo-task');
+export class App implements OnInit {
+  private router: Router = inject(Router);
+  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private titleService: Title = inject(Title);
+
+  ngOnInit() {
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => {
+          let route = this.activatedRoute.firstChild;
+          while (route?.firstChild) {
+            route = route.firstChild;
+          }
+          return route;
+        }),
+        mergeMap(route => route?.data ?? [])
+      )
+      .subscribe(data => {
+        if (data["title"]) {
+          this.titleService.setTitle(data["title"]);
+        } else {
+          this.titleService.setTitle("JB - Json Placeholder"); // fallback
+        }
+      });
+  }
 }
