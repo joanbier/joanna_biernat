@@ -15,4 +15,15 @@ export class Store {
     const posts = await this.postsApiService.getAllPosts();
     this.#posts.set(posts);
   }
+
+  toggleFav(postId: number) {
+    const posts = this.#posts();
+    if (!posts) return;
+
+    this.#posts.set(
+      posts.map(post =>
+        post.id === postId ? { ...post, isFav: !post.isFav } : post
+      )
+    );
+  }
 }
