@@ -21,6 +21,11 @@
     />
   </div>
 
+  <label class="flex items-center gap-2 mb-2">
+    <input type="checkbox" [checked]="showFavOnly()" (change)="showFavOnly.set($event.target.checked)" />
+    Shows only favs posts
+  </label>
+
   <p>Results: {{filteredPosts().length}}</p>
   @if (searchAuthor()) {
     <p>Results for user with ID: {{searchAuthor()}}</p>

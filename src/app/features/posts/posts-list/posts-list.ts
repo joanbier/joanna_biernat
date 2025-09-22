@@ -23,18 +23,22 @@ export class PostsList {
 
   filterTerm = signal<string>('');
   searchAuthor = signal<number | null>(null);
-
   postsByAuthor = signal<Post[] | null>(null);
+  showFavOnly = signal<boolean>(false);
 
   filteredPosts = computed(() => {
-    const all = this.postsByAuthor() ?? this.posts() ?? [];
+    let all = this.postsByAuthor() ?? this.posts() ?? [];
     const term = this.filterTerm().toLowerCase();
 
-    if (!term) return all;
+    if (term) {
+      all = all.filter(post => post.body.toLowerCase().includes(term));
+    }
 
-    return all.filter(post =>
-      post.body.toLowerCase().includes(term)
-    );
+    if (this.showFavOnly()) {
+      all = all.filter(post => post.isFav);
+    }
+
+    return all;
   });
 
   constructor() {
@@ -62,7 +66,14 @@ export class PostsList {
 
     this.searchAuthor.set(userId);
 
-    const posts = await this.postApiService.getPostsByUserId(userId);
+    let posts = await this.postApiService.getPostsByUserId(userId);
+
+    const allPosts = this.posts() ?? [];
+    posts = posts.map(post => {
+      const localPost = allPosts.find(p => p.id === post.id);
+      return { ...post, isFav: localPost?.isFav ?? false };
+    });
+
     this.postsByAuthor.set(posts);
   }
 }
